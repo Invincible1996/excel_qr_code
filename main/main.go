@@ -45,10 +45,11 @@ func readExcel() []model.ClassroomModel {
 		for i := 1; i < len(sheet.Rows); i++ {
 			var classModel model.ClassroomModel
 			for j := 0; j < len(sheet.Rows[i].Cells); j++ {
+				text := sheet.Rows[i].Cells[j].String()
 				if j == 0 {
-					classModel.Code = sheet.Rows[i].Cells[j].String()
+					classModel.SetCode(text)
 				} else if j == 1 {
-					classModel.Name = sheet.Rows[i].Cells[j].String()
+					classModel.SetName(text)
 				}
 			}
 			classModelList = append(classModelList, classModel)

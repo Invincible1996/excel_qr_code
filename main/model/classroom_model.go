@@ -5,10 +5,10 @@ type ClassroomModel struct {
 	Code string
 }
 
-func (c *ClassroomModel) setName(name string) {
+func (c *ClassroomModel) SetName(name string) {
 	c.Name = name
 }
 
-func (c *ClassroomModel) setCode(code string) {
+func (c *ClassroomModel) SetCode(code string) {
 	c.Code = code
 }
