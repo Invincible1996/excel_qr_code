@@ -1,16 +1,16 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"github.com/golang/freetype"
 	"github.com/nfnt/resize"
 	"github.com/skip2/go-qrcode"
-	"golang.org/x/image/font"
-	"golang.org/x/image/font/basicfont"
-	"golang.org/x/image/math/fixed"
 	"image"
 	"image/color"
 	"image/draw"
 	"image/png"
+	"io/ioutil"
 	"os"
 	"project/main/model"
 	"time"
@@ -19,13 +19,14 @@ import (
 )
 
 var (
-	err    error
-	inFile = "/Users/kevin/Downloads/H_Room.xlsx"
+	err      error
+	inFile   = "/Users/kevin/Downloads/H_Room0601.xlsx"
+	fontfile = flag.String("fontfile", "./fonts/msyhbd.ttc", "msyhbd.ttc")
 )
 
 func main() {
 	excel := readExcel()
-	fmt.Println("开始生成", time.Now())
+	fmt.Println("开始生成", time.Now(), len(excel), excel[0].Name)
 	for _, v := range excel {
 		if v.Code != "" && v.Name != "" {
 			var (
@@ -67,9 +68,9 @@ func main() {
 			draw.Draw(m, b, bgImg, image.Point{X: 0, Y: 0}, draw.Src)
 
 			draw.Draw(m, qrCodeImg.Bounds().Add(offset), qrCodeImg, image.Point{X: 0, Y: 0}, draw.Over)
-			addLabel(m, 206, 600, "Hello Go")
+			addLabel(m, 238, 1590, v.Name)
 			// 上传至oss时这段要改
-			i, _ := os.Create("/Users/kevin/qr-code/" + v.Name + ".png")
+			i, _ := os.Create("/Users/kevin/qr-code/" + v.Name + ".jpg")
 
 			_ = png.Encode(i, m)
 
@@ -166,15 +167,29 @@ func ImageResize(src image.Image, w, h int) image.Image {
 	return resize.Resize(uint(w), uint(h), src, resize.Lanczos3)
 }
 
+// 添加文字
 func addLabel(img *image.RGBA, x, y int, label string) {
-	col := color.RGBA{R: 200, G: 100, A: 255}
-	point := fixed.Point26_6{X: fixed.Int26_6(x * 64), Y: fixed.Int26_6(y * 64)}
-
-	d := &font.Drawer{
-		Dst:  img,
-		Src:  image.NewUniform(col),
-		Face: basicfont.Face7x13,
-		Dot:  point,
+	fontSourceBytes, err := ioutil.ReadFile(*fontfile)
+	if err != nil {
+		fmt.Println("读取文件出错", err)
+		return
 	}
-	d.DrawString(label)
+
+	trueTypeFont, err1 := freetype.ParseFont(fontSourceBytes)
+	if err != nil {
+		fmt.Println("解析字体出错", err1)
+	}
+	fc := freetype.NewContext()
+	fc.SetDPI(72)
+	fc.SetFont(trueTypeFont)
+	fc.SetFontSize(50)
+	fc.SetClip(img.Bounds())
+	fc.SetDst(img)
+	fc.SetSrc(image.NewUniform(color.Black)) // font size in pixels
+	pt := freetype.Pt(x, y)
+
+	_, err2 := fc.DrawString(label, pt)
+	if err2 != nil {
+		fmt.Println("绘制文字出错", err2)
+	}
 }
