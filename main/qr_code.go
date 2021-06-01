@@ -185,7 +185,7 @@ func addLabel(img *image.RGBA, x, y int, label string) {
 	fc.SetFontSize(50)
 	fc.SetClip(img.Bounds())
 	fc.SetDst(img)
-	fc.SetSrc(image.NewUniform(color.Black)) // font size in pixels
+	fc.SetSrc(image.NewUniform(color.RGBA{R: 0, G: 58, B: 92, A: 255})) // font size in pixels
 	pt := freetype.Pt(x, y)
 
 	_, err2 := fc.DrawString(label, pt)
