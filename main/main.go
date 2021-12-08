@@ -3,12 +3,12 @@
  * @Author: big shot
  * @LastEditors: Big.shot
  * @LastEditTime: 2021-05-31 13:50:06
- * @Description: Flutter
+ * @Description: go
  */
 package main
 
-import "fmt"
+// import "fmt"
 
-func main() {
-	fmt.Println("hello world")
-}
+// func main() {
+// 	fmt.Println("hello world")
+// }

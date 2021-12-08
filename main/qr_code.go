@@ -3,9 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/golang/freetype"
-	"github.com/nfnt/resize"
-	"github.com/skip2/go-qrcode"
 	"image"
 	"image/color"
 	"image/draw"
@@ -14,6 +11,10 @@ import (
 	"os"
 	"project/main/model"
 	"time"
+
+	"github.com/golang/freetype"
+	"github.com/nfnt/resize"
+	"github.com/skip2/go-qrcode"
 
 	"github.com/tealeg/xlsx"
 )
